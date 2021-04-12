@@ -1,4 +1,6 @@
 # TrustedProxies
+![Test results](https://github.com/sorenisanerd/go-trustedproxies/actions/workflows/test.yaml/badge.svg)
+
 
 Web frameworks frequently use X-Forwarded-For in a way that trivially allows an attacker to spoof their IP. This library helps filter out untrusted information.
 
