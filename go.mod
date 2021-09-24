@@ -1,3 +1,3 @@
 module github.com/sorenisanerd/go-trustedproxies
 
-go 1.11
+go 1.13
