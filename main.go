@@ -1,10 +1,14 @@
 package trustedproxies
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"strings"
 )
+
+// ErrInvalidIPSpecification indicates the IP specification is invalid and cannot be parsed.
+var ErrInvalidIPSpecification = errors.New("invalid IP specification")
 
 type TrustedProxies struct {
 	trustedCIDRs []*net.IPNet
@@ -45,7 +49,7 @@ func netFromIPOrCIDR(s string) (*net.IPNet, error) {
 	}
 	ip := net.ParseIP(s)
 	if ip == nil {
-		return nil, fmt.Errorf("invalid IP specification: %s", s)
+		return nil, fmt.Errorf("%w: %s", ErrInvalidIPSpecification, s)
 	}
 
 	ipv4 := ip.To4()
