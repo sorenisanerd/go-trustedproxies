@@ -1,6 +1,7 @@
 package trustedproxies
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"reflect"
@@ -14,19 +15,19 @@ func Test_netFromIPOrCIDR(t *testing.T) {
 		name    string
 		arg     string
 		want    *net.IPNet
-		wantErr bool
+		wantErr error
 	}{
-		{"IPv4 with mask", "192.168.10.10/25", optimisticParseCIDR("192.168.10.10/25"), false},
-		{"IPv6 with mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334/123", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/123"), false},
-		{"IPv6 in brackets with mask", "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]/123", nil, true},
-		{"IPv4 without mask", "192.168.10.10", optimisticParseCIDR("192.168.10.10/32"), false},
-		{"IPv6 without mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128"), false},
-		{"IPv6 with brackets, without mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128"), false},
+		{"IPv4 with mask", "192.168.10.10/25", optimisticParseCIDR("192.168.10.10/25"), nil},
+		{"IPv6 with mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334/123", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/123"), nil},
+		{"IPv6 in brackets with mask", "[2001:0db8:85a3:0000:0000:8a2e:0370:7334]/123", nil, ErrInvalidIPSpecification},
+		{"IPv4 without mask", "192.168.10.10", optimisticParseCIDR("192.168.10.10/32"), nil},
+		{"IPv6 without mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128"), nil},
+		{"IPv6 with brackets, without mask", "2001:0db8:85a3:0000:0000:8a2e:0370:7334", optimisticParseCIDR("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128"), nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := netFromIPOrCIDR(tt.arg)
-			if (err != nil) != tt.wantErr {
+			if !errors.Is(err, tt.wantErr) {
 				t.Errorf("netFromIPOrCIDR() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
