@@ -67,11 +67,9 @@ func (t *TrustedProxies) DeduceClientIP(remoteAddr net.IP, header string) *net.I
 func (t *TrustedProxies) filterOutIPsFromUntrustedSources(remoteAddr net.IP, header string) []*net.IP {
 	rv := []*net.IP{}
 	ips := headerToIPs(header)
-	fmt.Println(ips)
 
 	// We need to consider remoteAddr, too
 	ips = append(ips, &remoteAddr)
-	fmt.Println(ips)
 
 	// Moving backwards!
 	idx := len(ips) - 1
