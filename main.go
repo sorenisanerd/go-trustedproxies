@@ -86,6 +86,9 @@ func (t *TrustedProxies) filterOutIPsFromUntrustedSources(remoteAddr net.IP, hea
 		rv = append(rv, ip)
 		if t.IsIPTrusted(ip) != nil {
 			idx--
+			if idx < 0 {
+				break
+			}
 		} else {
 			// If we come across an IP that isn't trusted, we stop processing
 			break

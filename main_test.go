@@ -179,6 +179,14 @@ func TestTrustedProxies_DeduceClientIP(t *testing.T) {
 			[]string{"30.30.30.30"},
 			args{net.ParseIP("10.10.10.10"), "30.30.30.30, 20.20.20.20"},
 			"10.10.10.10"},
+		{"Single IP in header, all IPs trusted",
+			[]string{"30.30.30.30", "10.10.10.10"},
+			args{net.ParseIP("10.10.10.10"), "30.30.30.30"},
+			"30.30.30.30"},
+		{"Remote address is same as in header, trusted",
+			[]string{"30.30.30.30"},
+			args{net.ParseIP("30.30.30.30"), "30.30.30.30"},
+			"30.30.30.30"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
